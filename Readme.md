@@ -1,5 +1,7 @@
 # PHP Laravel AWS Lambda Serverless Application
 
+For explaination [follow my blog](https://medium.com/@karansingh010/paving-our-way-to-serverless-architectures-8d8b14be1bf0)
+
 ```
 https://github.com/ksingh7/laravel_custom_runtime_lambda.git
 ```
