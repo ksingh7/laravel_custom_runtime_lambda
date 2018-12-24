@@ -1,0 +1,159 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Cloudformation stack to manage permission to deploy a serverless application stack'
+
+Parameters:
+  ServiceName:
+    Description: Name of the Service you want to deploy
+    Type: String
+
+Resources:
+  ## Users
+  ServerlessAppUser:
+    Type: AWS::IAM::User
+    Properties:
+      ManagedPolicyArns: # Max 10 policies
+        - !Ref ServelessAppCFPolicy
+        - !Ref ServelessAppS3Policy
+        - !Ref ServelessAppLogsPolicy
+        - !Ref ServelessAppIAMPolicy
+        - !Ref ServelessAppSNSPolicy
+        - !Ref ServelessAppDynamoDbPolicy
+        - !Ref ServelessAppLambdaPolicy
+        - !Ref ServelessAppAPIGWPolicy
+
+  ServerlessAppUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref ServerlessAppUser
+
+  ## Managed policies
+  ServelessAppCFPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: 'cloudformation:*'
+            Resource: '*'
+
+  ServelessAppS3Policy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:*'
+            Resource: '*'
+
+  ServelessAppAPIGWPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'apigateway:*'
+            Resource: '*'
+
+  ServelessAppLogsPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'logs:CreateLogGroup'
+              - 'logs:CreateLogStream'
+              - 'logs:DeleteLogGroup'
+              - 'logs:DeleteLogStream'
+              - 'logs:DescribeLogStreams'
+              - 'logs:FilterLogEvents'
+              - 'logs:DescribeLogGroups'
+            Resource: '*'
+
+  ServelessAppIAMPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'iam:GetRole'
+              - 'iam:PassRole'
+              - 'iam:CreateRole'
+              - 'iam:DeleteRole'
+              - 'iam:DetachRolePolicy'
+              - 'iam:PutRolePolicy'
+              - 'iam:AttachRolePolicy'
+              - 'iam:DeleteRolePolicy'
+            Resource: '*'
+
+  ServelessAppLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'apigateway:GET'
+              - 'apigateway:POST'
+              - 'apigateway:PUT'
+              - 'apigateway:DELETE'
+            Resource: '*'
+
+          - Effect: Allow
+            Action:
+             - 'lambda:*'
+            Resource: '*'
+
+          - Effect: Allow
+            Action:
+              - 'events:Put*'
+              - 'events:Remove*'
+              - 'events:Delete*'
+              - 'events:Describe*'
+            Resource: '*'
+
+  ServelessAppSNSPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'sns:Add*'
+              - 'sns:Create*'
+              - 'sns:Delete*'
+              - 'sns:Subscribe'
+              - 'sns:Get*'
+              - 'sns:List*'
+            Resource: '*'
+
+  ServelessAppDynamoDbPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'dynamodb:Create*'
+              - 'dynamodb:Describe*'
+              - 'dynamodb:List*'
+              - 'dynamodb:Update*'
+            Resource: '*'
+
+Outputs:
+  ServerlessAppAccessKey:
+    Value: !Ref ServerlessAppUserAccessKey
+    Export:
+      Name: !Sub '${AWS::StackName}-ServerlessAppUserAccessKey'

@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: PHP Laravel Serverless Application
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  phpserver:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}
+      Description: Serverless Laravel Application
+      CodeUri: src/laravel
+      Runtime: provided
+      Handler: server.php
+      MemorySize: 1028
+      Timeout: 30
+      Tracing: Active
+      Layers:
+        - !Sub arn:aws:lambda:us-east-1:903134789966:layer:php71-laravel:3
+      Events:
+        api:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
+        api:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+      Environment:
+        Variables:
+          TZ: Asia/Kolkata
