@@ -1,7 +1,7 @@
 # PHP Laravel AWS Lambda Serverless Application
 
 ```
-git clone 
+git clone https://gitlab.com/scogo/laravel_custom_runtime_lambda.git
 ```
 - Edit ``build.sh`` if you like to add a specific library to your Lambda Layer (optional)
 - Edit ``regions.sh`` if you like to add multiple AWS regions to make your Lambda Layer available to
